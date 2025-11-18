@@ -1,14 +1,25 @@
 # ABC Summit 2025 Conference App
 
-**Tech Stack:** React Native (Expo) + Next.js + Supabase
+**Tech Stack:** React Native (Expo SDK 51) + Next.js 16 + Supabase
+**Launch Date:** December 1, 2025 (13 days)
+**Status:** 🚀 Active Development - MVP Sprint
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- npm 9+
+- **Node.js 20.9+** (REQUIRED for Next.js 16)
+- **npm 10+** (REQUIRED)
 - Expo CLI
 - Supabase account
+
+### Verify Your Environment
+```bash
+node --version   # Must show >= 20.9.0
+npm --version    # Must show >= 10.0.0
+```
+
+### Critical Note
+This project uses **Next.js 16** and **React 19**, which require Node.js 20.9+. Older Node versions will fail.
 
 ### Installation
 
@@ -64,10 +75,25 @@ abc-summit-2025/
 
 ## 🏗️ Development Timeline
 
-- **Week 1:** Project setup, registration form, data exports, mobile shell
-- **Week 2:** Roommate pairing algorithm, admin content management
-- **Week 3-4:** Polish UI, push notifications, Shanky integration
-- **Ongoing:** Testing, refinement, deployment prep
+**MVP Launch:** December 1, 2025 (13 days from Nov 18)
+**Event Date:** February 27-28, 2026
+
+### Sprint Plan (13 Days)
+- **Days 1-2:** Setup + Authentication ✅
+- **Days 3-5:** Registration + Data Exports ⭐
+- **Days 6-7:** Mobile App MVP
+- **Days 8-9:** Testing + Polish
+- **Days 10-11:** Deployment
+- **Days 12-13:** Final Testing + Launch 🚀
+
+See `MVP_SPRINT_PLAN.md` for detailed day-by-day breakdown.
+
+### Post-Launch (Dec 2 - Feb 27)
+- Automated roommate pairing algorithm
+- QR code check-in
+- Shanky integration
+- Interactive floor plans
+- Advanced features
 
 ## 📊 Database Schema
 
@@ -80,28 +106,32 @@ Key tables:
 - `roommate_selections` - User roommate preferences
 - `roommate_matches` - Final roommate assignments
 
-## 🔧 Tech Details
+## 🔧 Tech Stack (Production)
 
-### Web (Next.js)
-- TypeScript
-- Tailwind CSS
-- shadcn/ui components
-- React Hook Form + Zod
-- Supabase SSR
+### Web (Next.js 16)
+- **Next.js:** 16.0.3 (Latest LTS)
+- **React:** 19.2.0 (Required by Next.js 16)
+- **TypeScript:** 5.1+
+- **Tailwind CSS:** 3.4.x
+- **Forms:** React Hook Form + Zod
+- **State:** TanStack Query + Zustand
 
-### Mobile (React Native)
-- Expo Router
-- NativeWind (Tailwind)
-- React Query
-- QR Code generation
-- Push notifications
+### Mobile (Expo SDK 51)
+- **Expo:** SDK 51 (Proven stable)
+- **React Native:** 0.74.5
+- **React:** 18.2.0 (Mobile uses React 18)
+- **Styling:** NativeWind 4.0
+- **Navigation:** Expo Router
 
 ### Backend (Supabase)
-- PostgreSQL database
-- Row Level Security (RLS)
-- Real-time subscriptions
-- Authentication
-- Storage
+- **Database:** PostgreSQL 15
+- **Auth:** Supabase Auth (Google Sign-In)
+- **Storage:** Supabase Storage
+- **Security:** Row Level Security (RLS)
+
+**Note:** Web uses React 19, Mobile uses React 18 (different ecosystems)
+
+See `TECH_STACK.md` for complete details and compatibility matrix.
 
 ## 📝 License
 

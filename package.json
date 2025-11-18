@@ -16,7 +16,11 @@
     "type-check": "npm run type-check --workspaces"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.0",
+    "turbo": "^1.13.0"
   }
 }
