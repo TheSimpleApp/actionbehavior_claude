@@ -1,0 +1,307 @@
+# Next.js + TypeScript + React Development Rules
+
+## Code Style and Structure
+
+### TypeScript
+- Use TypeScript for all files (.ts, .tsx)
+- Prefer interfaces over types for object shapes
+- Use type for unions, intersections, and primitives
+- Enable strict mode and fix all type errors
+- Avoid `any` - use `unknown` if type is truly unknown
+- Use proper return types for functions
+- Leverage type inference where it improves readability
+
+### React Components
+- Use functional components with hooks
+- Prefer named exports for components
+- Use proper TypeScript types for props (interface ComponentProps)
+- Destructure props in function parameters
+- Use React.FC sparingly (prefer explicit prop types)
+- Keep components focused and single-responsibility
+- Extract complex logic into custom hooks
+
+### File Organization
+- Group related files in feature folders
+- Use index.ts for clean exports
+- Keep components, hooks, utils, and types separate
+- Follow Next.js App Router conventions:
+  - page.tsx for pages
+  - layout.tsx for layouts
+  - loading.tsx for loading states
+  - error.tsx for error boundaries
+  - route.ts for API routes
+
+### Naming Conventions
+- Components: PascalCase (UserProfile.tsx)
+- Files: kebab-case for non-components (user-utils.ts)
+- Hooks: camelCase starting with 'use' (useUserData)
+- Constants: UPPER_SNAKE_CASE
+- Types/Interfaces: PascalCase (UserProfile, ApiResponse)
+- Functions: camelCase (fetchUserData)
+
+## Next.js Specific
+
+### App Router
+- Use server components by default
+- Add 'use client' only when needed (hooks, browser APIs, event handlers)
+- Leverage React Server Components for data fetching
+- Use route groups (folders) for organization without affecting URL
+- Implement proper error boundaries and loading states
+
+### Performance
+- Use next/image for all images
+- Implement dynamic imports for code splitting
+- Use metadata API for SEO
+- Leverage caching strategies (fetch with cache options)
+- Avoid client-side data fetching when server-side is possible
+
+### Data Fetching
+- Use async/await in server components
+- Implement proper error handling with try/catch
+- Use React Query for client-side data fetching
+- Cache API responses appropriately
+- Handle loading and error states
+
+## Styling (Tailwind CSS + shadcn/ui)
+
+### Tailwind
+- Use Tailwind utility classes for styling
+- Leverage the cn() utility for conditional classes
+- Follow mobile-first responsive design
+- Use theme colors from tailwind.config
+- Avoid arbitrary values unless necessary
+
+### shadcn/ui
+- Import components from @/components/ui
+- Customize components via className prop
+- Use built-in variants when available
+- Maintain consistent spacing and sizing
+- Leverage Radix UI primitives for accessibility
+
+## State Management
+
+### Local State
+- Use useState for simple component state
+- Use useReducer for complex state logic
+- Lift state up when shared between components
+
+### Global State (Zustand)
+- Create focused stores (not one giant store)
+- Use selectors to prevent unnecessary rerenders
+- Keep actions colocated with state
+- Implement proper TypeScript types for stores
+
+### Form State
+- Use react-hook-form for forms
+- Integrate with Zod for validation
+- Implement proper error messaging
+- Handle loading states during submission
+
+## Database (Supabase)
+
+### Queries
+- Use TypeScript types generated from database
+- Implement proper error handling
+- Use select() to limit returned fields
+- Leverage RLS (Row Level Security) policies
+- Cache queries when appropriate
+
+### Real-time
+- Clean up subscriptions in useEffect cleanup
+- Handle connection errors gracefully
+- Implement optimistic updates for better UX
+
+## Code Quality
+
+### Best Practices
+- Write self-documenting code
+- Add comments for complex logic only
+- Keep functions small and focused
+- Follow DRY principle (Don't Repeat Yourself)
+- Implement proper error boundaries
+- Use early returns to reduce nesting
+
+### Error Handling
+- Always handle errors explicitly
+- Provide user-friendly error messages
+- Log errors for debugging (server-side)
+- Implement proper fallback UI
+- Use error boundaries for component errors
+
+### Testing Mindset
+- Write testable code (pure functions when possible)
+- Avoid tight coupling
+- Use dependency injection for external dependencies
+- Keep side effects isolated
+
+## Security
+
+### Best Practices
+- Never expose API keys in client code
+- Use environment variables for secrets
+- Validate all user inputs
+- Implement proper authentication checks
+- Use Supabase RLS for data access control
+- Sanitize data before rendering (XSS prevention)
+
+## Accessibility
+
+### Standards
+- Use semantic HTML elements
+- Provide proper ARIA labels when needed
+- Ensure keyboard navigation works
+- Maintain proper heading hierarchy
+- Use alt text for images
+- Ensure sufficient color contrast
+- shadcn/ui components are accessible by default (Radix UI)
+
+## Performance Optimization
+
+### React
+- Memoize expensive calculations with useMemo
+- Memoize callbacks with useCallback
+- Use React.memo for expensive components
+- Avoid inline object/array creation in props
+- Implement proper key props for lists
+
+### Next.js
+- Use proper caching strategies
+- Implement incremental static regeneration when appropriate
+- Optimize images with next/image
+- Use dynamic imports for code splitting
+- Leverage edge functions for performance
+
+## Import Organization
+
+### Order
+1. React and Next.js imports
+2. Third-party libraries
+3. Internal components
+4. Internal utilities and hooks
+5. Types and interfaces
+6. Styles
+
+### Example
+```typescript
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+import { Button } from '@/components/ui/button'
+import { createClient } from '@supabase/supabase-js'
+
+import { UserProfile } from '@/components/UserProfile'
+import { useUserData } from '@/hooks/useUserData'
+import { cn } from '@/lib/utils'
+
+import type { User, Profile } from '@/types'
+```
+
+## Comments and Documentation
+
+### When to Comment
+- Complex algorithms or business logic
+- Non-obvious workarounds or hacks
+- Public API functions (JSDoc)
+- Regular expressions
+- Configuration objects with many options
+
+### When NOT to Comment
+- Self-explanatory code
+- Variable declarations
+- Simple functions
+- Obvious operations
+
+## Git Commit Messages
+
+### Format
+- Use imperative mood ("Add feature" not "Added feature")
+- First line: brief summary (50 chars or less)
+- Separate subject from body with blank line
+- Body: explain what and why, not how
+- Reference issues/PRs when applicable
+
+### Examples
+- "Add CSV export for registrations"
+- "Fix roommate matching algorithm edge case"
+- "Refactor user profile component for performance"
+- "Update admin dashboard layout"
+
+## Environment Variables
+
+### Naming
+- Prefix public vars with NEXT_PUBLIC_
+- Use UPPER_SNAKE_CASE
+- Group by feature/service
+
+### Security
+- Never commit .env files
+- Use .env.example for documentation
+- Validate required env vars at startup
+- Use type-safe env vars (Zod schema)
+
+## Common Patterns
+
+### Async Component (Server)
+```typescript
+interface PageProps {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const data = await fetchData(params.id)
+  return <div>{/* render */}</div>
+}
+```
+
+### Client Component with Hooks
+```typescript
+'use client'
+
+import { useState } from 'react'
+
+interface ComponentProps {
+  initialValue: string
+}
+
+export function Component({ initialValue }: ComponentProps) {
+  const [value, setValue] = useState(initialValue)
+  return <div>{/* render */}</div>
+}
+```
+
+### Form with Validation
+```typescript
+'use client'
+
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const schema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2)
+})
+
+type FormData = z.infer<typeof schema>
+
+export function MyForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema)
+  })
+
+  const onSubmit = (data: FormData) => {
+    // handle submission
+  }
+
+  return <form onSubmit={handleSubmit(onSubmit)}>{/* fields */}</form>
+}
+```
+
+## Final Notes
+
+- Prioritize readability over cleverness
+- Optimize for maintainability
+- Follow the principle of least surprise
+- Write code that your future self will thank you for
+- When in doubt, keep it simple

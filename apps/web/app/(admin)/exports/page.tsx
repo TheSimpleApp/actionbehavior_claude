@@ -1,7 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { ExportButton } from '@/components/exports/ExportButton';
+import { Download } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   exportFullRegistrationData,
   exportRoommateSelections,
@@ -11,17 +28,21 @@ import {
   exportCateringData,
 } from '@/lib/exports/export-functions';
 
+interface ExportHistory {
+  type: string;
+  timestamp: Date;
+  recordCount: number;
+}
+
 export default function ExportsPage() {
-  const [exportHistory, setExportHistory] = useState<Array<{
-    type: string;
-    timestamp: Date;
-    recordCount: number;
-  }>>([]);
+  const [exportHistory, setExportHistory] = useState<ExportHistory[]>([]);
+  const [exportingType, setExportingType] = useState<string | null>(null);
 
   const handleExport = async (
     exportFn: () => Promise<{ recordCount: number }>,
     type: string
   ) => {
+    setExportingType(type);
     try {
       const result = await exportFn();
       setExportHistory([
@@ -31,8 +52,91 @@ export default function ExportsPage() {
     } catch (error) {
       console.error('Export failed:', error);
       alert('Export failed. Please try again.');
+    } finally {
+      setExportingType(null);
     }
   };
+
+  const exports = [
+    {
+      title: 'Full Registration Data',
+      description: 'All registration fields including travel, hotel, and personal preferences',
+      priority: true,
+      fields: [
+        'User profile information',
+        'RSVP status',
+        'Travel details (government name, DOB, gender, etc.)',
+        'Hotel needs',
+        'Personal preferences',
+      ],
+      handler: exportFullRegistrationData,
+      type: 'Full Registration',
+    },
+    {
+      title: 'Roommate Selections',
+      description: 'All user roommate preferences (3 choices per person)',
+      fields: [
+        'User information',
+        '1st, 2nd, 3rd choice roommates',
+        'Selection timestamps',
+        'Locked status',
+      ],
+      handler: exportRoommateSelections,
+      type: 'Roommate Selections',
+    },
+    {
+      title: 'Roommate Matches',
+      description: 'Final roommate assignments (algorithm or admin)',
+      fields: [
+        'Matched pairs',
+        'Match scores',
+        'Match method (algorithm/admin)',
+        'Hotel information',
+      ],
+      handler: exportRoommateMatches,
+      type: 'Roommate Matches',
+    },
+    {
+      title: 'Flight Data',
+      description: 'Formatted for airline booking and travel agent',
+      fields: [
+        'Government name (as on ID)',
+        'Date of birth',
+        'Gender',
+        'Personal email',
+        'Frequent flyer numbers',
+        'Flight preferences',
+      ],
+      handler: exportFlightData,
+      type: 'Flight Data',
+    },
+    {
+      title: 'Hotel Data',
+      description: 'Room assignments and confirmation numbers',
+      fields: [
+        'Attendee names',
+        'Roommate pairings',
+        'Hotel name',
+        'Confirmation numbers',
+        'Room numbers',
+      ],
+      handler: exportHotelData,
+      type: 'Hotel Data',
+    },
+    {
+      title: 'Catering Data',
+      description: 'Meal preferences and dietary restrictions',
+      fields: [
+        'Attendee names',
+        'Meal preferences',
+        'Dietary restrictions',
+        'Count summaries',
+        'Medical accommodations',
+      ],
+      handler: exportCateringData,
+      type: 'Catering Data',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -45,196 +149,72 @@ export default function ExportsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Full Registration Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Full Registration Data
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  All registration fields including travel, hotel, and personal preferences
-                </p>
-              </div>
-              <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                PRIORITY
-              </span>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• User profile information</p>
-              <p>• RSVP status</p>
-              <p>• Travel details (government name, DOB, gender, etc.)</p>
-              <p>• Hotel needs</p>
-              <p>• Personal preferences</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportFullRegistrationData, 'Full Registration')}
-              label="Export Full Registration Data"
-            />
-          </div>
-
-          {/* Roommate Selections Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Roommate Selections
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  All user roommate preferences (3 choices per person)
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• User information</p>
-              <p>• 1st, 2nd, 3rd choice roommates</p>
-              <p>• Selection timestamps</p>
-              <p>• Locked status</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportRoommateSelections, 'Roommate Selections')}
-              label="Export Roommate Selections"
-            />
-          </div>
-
-          {/* Roommate Matches Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Roommate Matches
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Final roommate assignments (algorithm or admin)
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• Matched pairs</p>
-              <p>• Match scores</p>
-              <p>• Match method (algorithm/admin)</p>
-              <p>• Hotel information</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportRoommateMatches, 'Roommate Matches')}
-              label="Export Roommate Matches"
-            />
-          </div>
-
-          {/* Flight Data Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Flight Data
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Formatted for airline booking and travel agent
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• Government name (as on ID)</p>
-              <p>• Date of birth</p>
-              <p>• Gender</p>
-              <p>• Personal email</p>
-              <p>• Frequent flyer numbers</p>
-              <p>• Flight preferences</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportFlightData, 'Flight Data')}
-              label="Export Flight Data"
-            />
-          </div>
-
-          {/* Hotel Data Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Hotel Data
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Room assignments and confirmation numbers
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• Attendee names</p>
-              <p>• Roommate pairings</p>
-              <p>• Hotel name</p>
-              <p>• Confirmation numbers</p>
-              <p>• Room numbers</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportHotelData, 'Hotel Data')}
-              label="Export Hotel Data"
-            />
-          </div>
-
-          {/* Catering Data Export */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  Catering Data
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Meal preferences and dietary restrictions
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 mb-4">
-              <p>• Attendee names</p>
-              <p>• Meal preferences</p>
-              <p>• Dietary restrictions</p>
-              <p>• Count summaries</p>
-              <p>• Medical accommodations</p>
-            </div>
-            <ExportButton
-              onClick={() => handleExport(exportCateringData, 'Catering Data')}
-              label="Export Catering Data"
-            />
-          </div>
+          {exports.map((exportItem) => (
+            <Card key={exportItem.type}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-xl">{exportItem.title}</CardTitle>
+                    <CardDescription className="mt-2">
+                      {exportItem.description}
+                    </CardDescription>
+                  </div>
+                  {exportItem.priority && (
+                    <Badge variant="destructive">PRIORITY</Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-muted-foreground mb-4">
+                  {exportItem.fields.map((field, index) => (
+                    <p key={index}>• {field}</p>
+                  ))}
+                </div>
+                <Button
+                  onClick={() => handleExport(exportItem.handler, exportItem.type)}
+                  disabled={exportingType !== null}
+                  className="w-full"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {exportingType === exportItem.type
+                    ? 'Exporting...'
+                    : `Export ${exportItem.title}`}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Export History */}
         {exportHistory.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Export History</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Export Type
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Timestamp
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Records
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Export History</CardTitle>
+              <CardDescription>Recent export operations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Export Type</TableHead>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead>Records</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {exportHistory.map((item, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {item.type}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                        {item.timestamp.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                        {item.recordCount} records
-                      </td>
-                    </tr>
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{item.type}</TableCell>
+                      <TableCell>{item.timestamp.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{item.recordCount} records</Badge>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
