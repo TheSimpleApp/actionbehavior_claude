@@ -1,0 +1,22 @@
+{
+  "name": "abc-summit-2025",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ABC Summit 2025 Conference App - React Native + Next.js + Supabase",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "web": "npm run dev --workspace=apps/web",
+    "mobile": "npm run start --workspace=apps/mobile",
+    "dev": "npm run web",
+    "build:web": "npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspaces",
+    "type-check": "npm run type-check --workspaces"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
