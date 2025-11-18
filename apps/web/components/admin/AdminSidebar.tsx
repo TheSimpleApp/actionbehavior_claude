@@ -15,13 +15,13 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Registrations', href: '/admin/registrations', icon: Users },
-  { name: 'Roommates', href: '/admin/roommates', icon: UserCheck },
-  { name: 'Travel', href: '/admin/travel', icon: Plane },
+  { name: 'Registrations', href: '/registrations', icon: Users },
+  { name: 'Roommates', href: '/roommates', icon: UserCheck },
+  { name: 'Travel', href: '/travel', icon: Plane },
+  { name: 'Users', href: '/users', icon: Settings },
   { name: 'Exports', href: '/exports', icon: Download },
-  { name: 'Content', href: '/admin/content', icon: FileText },
-  { name: 'Notifications', href: '/admin/notifications', icon: Bell },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
+  { name: 'Notifications', href: '/notifications', icon: Bell },
+  { name: 'Settings', href: '/settings', icon: FileText },
 ];
 
 export function AdminSidebar() {
