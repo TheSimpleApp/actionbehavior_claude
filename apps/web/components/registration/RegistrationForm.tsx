@@ -139,14 +139,21 @@ export function RegistrationForm() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     try {
-      // TODO: Submit to Supabase
-      console.log('Submitting registration:', data);
+      const { submitRegistration } = await import('@/lib/registration/submit-registration');
+      await submitRegistration(data);
 
       // Show success message
-      alert('Registration submitted successfully!');
-    } catch (error) {
+      alert('Registration submitted successfully! You will receive a confirmation email shortly.');
+
+      // Redirect based on RSVP status
+      if (data.rsvp_status === 'yes') {
+        window.location.href = '/register/success';
+      } else {
+        window.location.href = '/register/declined';
+      }
+    } catch (error: any) {
       console.error('Error submitting registration:', error);
-      alert('Error submitting registration. Please try again.');
+      alert('Error submitting registration: ' + (error.message || 'Please try again.'));
     } finally {
       setIsSubmitting(false);
     }

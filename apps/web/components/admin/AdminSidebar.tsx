@@ -63,7 +63,7 @@ export function AdminSidebar() {
 
       {/* User Section */}
       <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
             A
           </div>
@@ -72,6 +72,14 @@ export function AdminSidebar() {
             <p className="text-xs text-gray-600">admin@abc.com</p>
           </div>
         </div>
+        <form action="/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            Logout
+          </button>
+        </form>
       </div>
     </div>
   );
