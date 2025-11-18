@@ -334,6 +334,7 @@ export default function RoommatesPage() {
               data={matches}
               searchPlaceholder="Search matches..."
               emptyMessage="No matches found. Run the matching algorithm to create matches."
+              loading={loading}
             />
           </TabsContent>
 
@@ -350,6 +351,7 @@ export default function RoommatesPage() {
               data={selections}
               searchPlaceholder="Search selections..."
               emptyMessage="No roommate selections found."
+              loading={loading}
             />
           </TabsContent>
         </Tabs>

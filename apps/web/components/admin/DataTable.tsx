@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ChevronDown, ChevronUp, Search, Filter } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface Column<T> {
   id: string;
@@ -49,6 +50,7 @@ interface DataTableProps<T> {
   filters?: FilterOption[];
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
+  loading?: boolean;
 }
 
 export function DataTable<T extends Record<string, any>>({
@@ -59,6 +61,7 @@ export function DataTable<T extends Record<string, any>>({
   filters = [],
   onRowClick,
   emptyMessage = 'No results found.',
+  loading = false,
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -230,7 +233,20 @@ export function DataTable<T extends Record<string, any>>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.length === 0 ? (
+            {loading ? (
+              // Loading skeleton
+              [...Array(5)].map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {columns
+                    .filter((col) => visibleColumns.includes(col.id))
+                    .map((column) => (
+                      <TableCell key={column.id}>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                    ))}
+                </TableRow>
+              ))
+            ) : filteredData.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}

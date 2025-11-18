@@ -209,6 +209,7 @@ export default function TravelPage() {
             data={registrations}
             searchPlaceholder="Search by name, email, or frequent flyer number..."
             emptyMessage="No travel bookings found."
+            loading={loading}
           />
         </div>
 

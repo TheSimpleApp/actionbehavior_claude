@@ -209,6 +209,7 @@ export default function RegistrationsPage() {
           filters={filters}
           onRowClick={handleRowClick}
           emptyMessage="No registrations found."
+          loading={loading}
         />
       </div>
 

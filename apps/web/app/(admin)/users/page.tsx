@@ -257,6 +257,7 @@ export default function UsersPage() {
           searchPlaceholder="Search by name, email, or job title..."
           filters={filters}
           emptyMessage="No users found."
+          loading={loading}
         />
       </div>
 
